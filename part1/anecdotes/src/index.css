@@ -1,0 +1,15 @@
+button {
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 20px;
+  background-color: dodgerblue;
+  border: none;
+  color: #fff;
+  margin: 0;
+  margin-right: 10px;
+}
+
+button.vote {
+  background-color: green;
+}
