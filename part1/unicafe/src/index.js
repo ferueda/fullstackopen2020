@@ -23,6 +23,10 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
+  const total = good + neutral + bad;
+  const average = (good - bad) / total;
+  const positive = (good / total) * 100;
+
   const goodFeedback = () => {
     setGood(good + 1);
   };
@@ -45,6 +49,12 @@ const App = () => {
       <Statistic name='Good' data={good} />
       <Statistic name='Neutral' data={neutral} />
       <Statistic name='Bad' data={bad} />
+      <Statistic name='Total' data={total} />
+      <Statistic name='Average' data={average ? average.toFixed(2) : 0} />
+      <Statistic
+        name='Positive'
+        data={`${positive ? positive.toFixed(0) : 0} %`}
+      />
     </div>
   );
 };
