@@ -2,15 +2,22 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const Heading = props => {
-  return <h2>{props.message}</h2>;
-};
+const Heading = props => <h2>{props.message}</h2>;
 
-const Button = props => {
-  return <button onClick={props.handleClick}>{props.name}</button>;
-};
+const Button = props => (
+  <button className={props.className} onClick={props.handleClick}>
+    {props.name}
+  </button>
+);
 
-const Statistic = ({ data }) => {
+const Statistic = ({ name, value }) => (
+  <tr>
+    <td>{name}:</td>
+    <td>{value}</td>
+  </tr>
+);
+
+const Statistics = ({ data }) => {
   const total = data.good + data.neutral + data.bad;
   const average = (data.good - data.bad) / total;
   const positive = (data.good / total) * 100;
@@ -20,14 +27,16 @@ const Statistic = ({ data }) => {
   }
 
   return (
-    <div>
-      <p>Good: {data.good}</p>
-      <p>Neutral: {data.neutral}</p>
-      <p>Bad: {data.bad}</p>
-      <p>Total: {total}</p>
-      <p>Average: {average.toFixed(2)}</p>
-      <p>Positive: {positive.toFixed(0)}%</p>
-    </div>
+    <table>
+      <tbody>
+        <Statistic name='Good' value={data.good} />
+        <Statistic name='Neutral' value={data.neutral} />
+        <Statistic name='Bad' value={data.bad} />
+        <Statistic name='Total' value={total} />
+        <Statistic name='Average' value={average.toFixed(2)} />
+        <Statistic name='Positive' value={`${positive.toFixed(0)}%`} />
+      </tbody>
+    </table>
   );
 };
 
@@ -57,11 +66,11 @@ const App = () => {
   return (
     <div>
       <Heading message='Please leave your feedback' />
-      <Button handleClick={goodFeedback} name='Good' />
+      <Button className='good' handleClick={goodFeedback} name='Good' />
       <Button handleClick={neutralFeedback} name='Neutral' />
-      <Button handleClick={badFeedback} name='Bad' />
+      <Button className='bad' handleClick={badFeedback} name='Bad' />
       <Heading message='Statistics' />
-      <Statistic data={data} />
+      <Statistics data={data} />
     </div>
   );
 };
