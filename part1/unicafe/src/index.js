@@ -10,11 +10,24 @@ const Button = props => {
   return <button onClick={props.handleClick}>{props.name}</button>;
 };
 
-const Statistic = props => {
+const Statistic = ({ data }) => {
+  const total = data.good + data.neutral + data.bad;
+  const average = (data.good - data.bad) / total;
+  const positive = (data.good / total) * 100;
+
+  if (total === 0) {
+    return <p>No feedback yet</p>;
+  }
+
   return (
-    <p>
-      {props.name}: {props.data}
-    </p>
+    <div>
+      <p>Good: {data.good}</p>
+      <p>Neutral: {data.neutral}</p>
+      <p>Bad: {data.bad}</p>
+      <p>Total: {total}</p>
+      <p>Average: {average.toFixed(2)}</p>
+      <p>Positive: {positive.toFixed(0)}%</p>
+    </div>
   );
 };
 
@@ -23,9 +36,11 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const total = good + neutral + bad;
-  const average = (good - bad) / total;
-  const positive = (good / total) * 100;
+  const data = {
+    good,
+    neutral,
+    bad
+  };
 
   const goodFeedback = () => {
     setGood(good + 1);
@@ -46,15 +61,7 @@ const App = () => {
       <Button handleClick={neutralFeedback} name='Neutral' />
       <Button handleClick={badFeedback} name='Bad' />
       <Heading message='Statistics' />
-      <Statistic name='Good' data={good} />
-      <Statistic name='Neutral' data={neutral} />
-      <Statistic name='Bad' data={bad} />
-      <Statistic name='Total' data={total} />
-      <Statistic name='Average' data={average ? average.toFixed(2) : 0} />
-      <Statistic
-        name='Positive'
-        data={`${positive ? positive.toFixed(0) : 0} %`}
-      />
+      <Statistic data={data} />
     </div>
   );
 };
