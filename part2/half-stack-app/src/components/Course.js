@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const Course = () => {
-  return <p>test</p>;
+const Course = ({ courseName, exercises }) => {
+  return (
+    <p>
+      {courseName} {exercises}
+    </p>
+  );
 };
 
 export default Course;
