@@ -1,2 +1,4 @@
 # fullstackopen2020
-Personal submissions for the 2020's fullstackopen course.
+Personal submissions for the University of Helsinki's 2020 fullstackopen course.
+
+Official Website: https://fullstackopen.com/en
