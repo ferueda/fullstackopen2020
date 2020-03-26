@@ -19,11 +19,21 @@ const Content = ({ parts }) => {
   );
 };
 
+const ExercisesTotal = ({ parts }) => {
+  const total = parts.reduce((total, part) => total + part.exercises, 0);
+  return (
+    <p>
+      <strong>Total of {total} exercises</strong>
+    </p>
+  );
+};
+
 const App = ({ course }) => {
   return (
     <div>
       <Header text={course.name} />
       <Content parts={course.parts} />
+      <ExercisesTotal parts={course.parts} />
     </div>
   );
 };
