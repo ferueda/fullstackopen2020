@@ -8,7 +8,7 @@ import Numbers from './components/Numbers';
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
-  const [newPhone, setNewPhone] = useState('');
+  const [newNumber, setNewNumber] = useState('');
   const [newSearch, setNewSearch] = useState('');
   const [showAll, setShowAll] = useState(true);
 
@@ -23,7 +23,7 @@ const App = () => {
   };
 
   const handlePhoneChange = e => {
-    setNewPhone(e.target.value);
+    setNewNumber(e.target.value);
   };
 
   const handleSearchChange = e => {
@@ -43,7 +43,7 @@ const App = () => {
       const personObject = {
         name: newName,
         id: persons.length + 1,
-        phone: newPhone
+        number: newNumber
       };
       setPersons(persons.concat(personObject));
       setNewName('');
@@ -68,7 +68,7 @@ const App = () => {
         addPerson={addPerson}
         newName={newName}
         handleNameChange={handleNameChange}
-        newPhone={newPhone}
+        newPhone={newNumber}
         handlePhoneChange={handlePhoneChange}
         displayBlock={displayBlock}
       />
