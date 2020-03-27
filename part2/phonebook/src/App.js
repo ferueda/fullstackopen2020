@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
-
-const Heading = ({ type, text }) => {
-  switch (type) {
-    case 'h1':
-      return <h1>{text}</h1>;
-    case 'h2':
-      return <h2>{text}</h2>;
-    case 'h3':
-      return <h3>{text}</h3>;
-  }
-};
+import Heading from './components/Heading';
+import PersonForm from './components/PersonForm';
+import Filter from './components/Filter';
+import Numbers from './components/Numbers';
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -65,41 +58,17 @@ const App = () => {
 
   return (
     <div>
-      <Heading type='h2' text='Phonebook' />
-      <label htmlFor='search'>Filter shown with: </label>
-      <input
-        type='text'
-        name='search'
-        value={newSearch}
-        onChange={handleSearchChange}
+      <Heading type='h1' text='Phonebook' />
+      <Filter newSearch={newSearch} handleSearchChange={handleSearchChange} />
+      <PersonForm
+        addPerson={addPerson}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newPhone={newPhone}
+        handlePhoneChange={handlePhoneChange}
+        displayBlock={displayBlock}
       />
-      <Heading type='h2' text='Add new' />
-      <form onSubmit={addPerson}>
-        <input
-          type='text'
-          value={newName}
-          onChange={handleNameChange}
-          placeholder='Enter name...'
-        />
-        <input
-          type='text'
-          value={newPhone}
-          onChange={handlePhoneChange}
-          style={displayBlock}
-          placeholder='Enter phone number'
-        />
-        <button style={displayBlock} type='submit'>
-          Add
-        </button>
-      </form>
-      <Heading type='h2' text='Numbers' />
-      <div>
-        {personsToShow.map(person => (
-          <p key={person.id}>
-            {person.name} - {person.phone}{' '}
-          </p>
-        ))}
-      </div>
+      <Numbers personsToShow={personsToShow} />
     </div>
   );
 };
