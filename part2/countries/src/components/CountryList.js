@@ -1,7 +1,7 @@
 import React from 'react';
 import Country from './Country';
 
-const CountryList = ({ countries, showAll }) => {
+const CountryList = ({ countries, showAll, handleShowClick }) => {
   if (showAll) {
     return <p>Please type a country in the input</p>;
   }
@@ -17,7 +17,12 @@ const CountryList = ({ countries, showAll }) => {
     toShow = <p>There are no countries with those characters</p>;
   } else {
     toShow = countries.map(country => (
-      <p key={country.alpha2Code}>{country.name}</p>
+      <div key={country.alpha2Code}>
+        <span>{country.name}</span>
+        <button data-country={country.name} onClick={handleShowClick}>
+          Show
+        </button>
+      </div>
     ));
   }
 

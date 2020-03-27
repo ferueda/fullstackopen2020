@@ -23,6 +23,10 @@ const App = () => {
     }
   };
 
+  const handleShowClick = e => {
+    setNewSearch(e.target.dataset.country);
+  };
+
   const countriesToShow = showAll
     ? countries
     : countries.filter(country =>
@@ -37,7 +41,11 @@ const App = () => {
         handleSearchChange={handleSearchChange}
       />
       <h2>Country List</h2>
-      <CountryList countries={countriesToShow} showAll={showAll} />
+      <CountryList
+        countries={countriesToShow}
+        showAll={showAll}
+        handleShowClick={handleShowClick}
+      />
     </div>
   );
 };
