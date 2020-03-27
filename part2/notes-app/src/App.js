@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Notes from './components/Notes';
+import NoteForm from './components/NoteForm';
+import FilterNotes from './components/FilterNotes';
 
-const App = props => {
+const App = () => {
   const [newNote, setNewNote] = useState('');
-  const [notes, setNotes] = useState(props.notes);
+  const [notes, setNotes] = useState([]);
   const [showAll, setShowAll] = useState(true);
+  const [newFilter, setNewFilter] = useState('');
 
   const handleNoteChange = e => {
     setNewNote(e.target.value);
   };
+
+  const handleFilterChange = e => {
+    setNewFilter(e.target.value);
+    setShowAll(false);
+  };
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/notes').then(response => {
+      setNotes(response.data);
+    });
+  }, []);
 
   const addNote = e => {
     e.preventDefault();
@@ -24,23 +39,24 @@ const App = props => {
     }
   };
 
-  const notesToShow = showAll ? notes : notes.filter(note => note.important);
+  const notesToShow = showAll
+    ? notes
+    : notes.filter(note =>
+        note.content.toLowerCase().includes(newFilter.toLowerCase())
+      );
 
   return (
     <div>
       <h1>Notes</h1>
-      <form onSubmit={addNote}>
-        <input
-          type='text'
-          placeholder='Note title...'
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-        <button type='submit'>Add note</button>
-      </form>
-      <button onClick={() => setShowAll(!showAll)}>
-        Show {showAll ? 'important' : 'all'}{' '}
-      </button>
+      <NoteForm
+        addNote={addNote}
+        newNote={newNote}
+        handleNoteChange={handleNoteChange}
+      />
+      <FilterNotes
+        newFilter={newFilter}
+        handleFilterChange={handleFilterChange}
+      />
       <Notes notes={notesToShow} />
     </div>
   );
