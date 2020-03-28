@@ -1,16 +1,31 @@
 import React from 'react';
 
-const Note = ({ content }) => {
-  return <p>{content}</p>;
+const Note = ({ note, toggleImportance }) => {
+  const label = note.important ? 'make not important' : 'make important';
+  return (
+    <li>
+      <span>
+        {note.content} [
+        {note.important ? <strong>Important</strong> : 'Not important'}]
+      </span>
+      <button onClick={toggleImportance}>{label}</button>
+    </li>
+  );
 };
 
-const Notes = ({ notes }) => {
+const Notes = ({ notes, toggleImportanceOf }) => {
   return (
-    <div>
+    <ul>
       {notes.map(note => (
-        <Note key={note.id} content={note.content} />
+        <Note
+          key={note.id}
+          note={note}
+          toggleImportance={() => {
+            toggleImportanceOf(note.id);
+          }}
+        />
       ))}
-    </div>
+    </ul>
   );
 };
 
