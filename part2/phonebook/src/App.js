@@ -49,22 +49,46 @@ const App = () => {
         person => person.name.toLowerCase() === newName.toLowerCase()
       )
     ) {
-      alert(`${newName} is already added to the phonebook`);
-      return;
-    }
+      const person = persons.find(
+        person => person.name.toLowerCase() === newName.toLowerCase()
+      );
 
-    if (newName !== '') {
-      const personObject = {
-        name: newName,
-        id: persons.length + 1,
-        number: newNumber
-      };
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook. Want to replace the old number with the new one? ${newNumber}`
+        )
+      ) {
+        const personObject = {
+          ...person,
+          number: newNumber
+        };
 
-      personServices.createPerson(personObject).then(personResponse => {
-        setPersons(persons.concat(personResponse));
-        setNewName('');
-        setNewNumber('');
-      });
+        personServices
+          .updatePerson(person.id, personObject)
+          .then(modifiedPerson => {
+            setPersons(
+              persons.map(person =>
+                person.id !== modifiedPerson.id ? person : modifiedPerson
+              )
+            );
+            setNewName('');
+            setNewNumber('');
+          });
+      }
+    } else {
+      if (newName !== '') {
+        const personObject = {
+          name: newName,
+          id: persons.length + 1,
+          number: newNumber
+        };
+
+        personServices.createPerson(personObject).then(personResponse => {
+          setPersons(persons.concat(personResponse));
+          setNewName('');
+          setNewNumber('');
+        });
+      }
     }
   };
 
