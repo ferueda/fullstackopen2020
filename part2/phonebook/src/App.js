@@ -4,6 +4,7 @@ import Heading from './components/Heading';
 import PersonForm from './components/PersonForm';
 import Filter from './components/Filter';
 import Numbers from './components/Numbers';
+import personServices from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -13,8 +14,8 @@ const App = () => {
   const [showAll, setShowAll] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => {
-      setPersons(response.data);
+    personServices.getAll().then(initialData => {
+      setPersons(initialData);
     });
   }, []);
 
@@ -50,12 +51,10 @@ const App = () => {
         number: newNumber
       };
 
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-          setPersons(persons.concat(response.data));
-          setNewName('');
-        });
+      personServices.create(personObject).then(personResponse => {
+        setPersons(persons.concat(personResponse));
+        setNewName('');
+      });
     }
   };
 
