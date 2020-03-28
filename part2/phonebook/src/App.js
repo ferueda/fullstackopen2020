@@ -34,7 +34,11 @@ const App = () => {
   const addPerson = e => {
     e.preventDefault();
 
-    if (persons.find(person => person.name.includes(newName))) {
+    if (
+      persons.find(
+        person => person.name.toLowerCase() === newName.toLowerCase()
+      )
+    ) {
       alert(`${newName} is already added to the phonebook`);
       return;
     }
@@ -45,8 +49,13 @@ const App = () => {
         id: persons.length + 1,
         number: newNumber
       };
-      setPersons(persons.concat(personObject));
-      setNewName('');
+
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data));
+          setNewName('');
+        });
     }
   };
 
