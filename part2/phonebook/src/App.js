@@ -3,7 +3,7 @@ import axios from 'axios';
 import Heading from './components/Heading';
 import PersonForm from './components/PersonForm';
 import Filter from './components/Filter';
-import Numbers from './components/Numbers';
+import Persons from './components/Persons';
 import personServices from './services/persons';
 
 const App = () => {
@@ -32,6 +32,15 @@ const App = () => {
     setShowAll(false);
   };
 
+  const handleDeletionOf = (personId, personName) => {
+    if (window.confirm(`Are you sure you want to delete ${personName}?`)) {
+      personServices
+        .deletePerson(personId)
+        .then(() => personServices.getAll())
+        .then(updatedPersons => setPersons(updatedPersons));
+    }
+  };
+
   const addPerson = e => {
     e.preventDefault();
 
@@ -51,9 +60,10 @@ const App = () => {
         number: newNumber
       };
 
-      personServices.create(personObject).then(personResponse => {
+      personServices.createPerson(personObject).then(personResponse => {
         setPersons(persons.concat(personResponse));
         setNewName('');
+        setNewNumber('');
       });
     }
   };
@@ -80,7 +90,10 @@ const App = () => {
         handlePhoneChange={handlePhoneChange}
         displayBlock={displayBlock}
       />
-      <Numbers personsToShow={personsToShow} />
+      <Persons
+        personsToShow={personsToShow}
+        handleDeletionOf={handleDeletionOf}
+      />
     </div>
   );
 };

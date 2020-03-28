@@ -7,9 +7,14 @@ const getAll = async () => {
   return response.data;
 };
 
-const create = async personObject => {
+const createPerson = async personObject => {
   const response = await axios.post(baseURL, personObject);
   return response.data;
 };
 
-export default { getAll, create };
+const deletePerson = async personId => {
+  const response = await axios.delete(`${baseURL}/${personId}`);
+  return response;
+};
+
+export default { getAll, createPerson, deletePerson };
