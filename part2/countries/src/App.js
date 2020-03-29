@@ -1,50 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import services from './services/APIservices';
 import FindCountry from './components/FindCountry';
-import CountryList from './components/CountryList';
+import Countries from './components/Countries';
 
 const App = () => {
-  const [newSearch, setNewSearch] = useState('');
+  const [newFilter, setNewFilter] = useState('chile');
   const [countries, setCountries] = useState([]);
-  const [showAll, setShowAll] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    axios.get('https://restcountries.eu/rest/v2/all').then(response => {
-      setCountries(response.data);
-    });
+    services.getCountries().then(data => setCountries(data));
   }, []);
 
-  const handleSearchChange = e => {
-    setNewSearch(e.target.value);
-    if (e.target.value !== '') {
+  const handleFilterChange = e => {
+    setNewFilter(e.target.value);
+    if (e.target !== '') {
       setShowAll(false);
-    } else {
+    } else if (e.target === '') {
       setShowAll(true);
     }
   };
 
-  const handleShowClick = e => {
-    setNewSearch(e.target.dataset.country);
+  const showCountryInfo = countryName => {
+    setNewFilter(countryName);
   };
 
+  const totalCountries = countries.length;
   const countriesToShow = showAll
     ? countries
     : countries.filter(country =>
-        country.name.toLowerCase().startsWith(newSearch.toLowerCase())
+        country.name.toLowerCase().startsWith(newFilter.toLowerCase())
       );
 
   return (
     <div>
       <h1>Country Finder</h1>
       <FindCountry
-        newSearch={newSearch}
-        handleSearchChange={handleSearchChange}
+        newFilter={newFilter}
+        handleFilterChange={handleFilterChange}
       />
-      <h2>Country List</h2>
-      <CountryList
+      <Countries
         countries={countriesToShow}
-        showAll={showAll}
-        handleShowClick={handleShowClick}
+        total={totalCountries}
+        showCountryInfo={showCountryInfo}
       />
     </div>
   );

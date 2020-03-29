@@ -1,15 +1,13 @@
 import React from 'react';
 
-const FindCountry = ({ newSearch, handleSearchChange }) => {
+const FindCountry = ({ newFilter, handleFilterChange }) => {
   return (
-    <div>
-      <input
-        type='text'
-        placeholder='Find country...'
-        value={newSearch}
-        onChange={handleSearchChange}
-      />
-    </div>
+    <input
+      type='text'
+      placeholder='Enter a country...'
+      value={newFilter}
+      onChange={handleFilterChange}
+    />
   );
 };
 
