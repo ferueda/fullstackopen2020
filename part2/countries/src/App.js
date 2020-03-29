@@ -4,9 +4,9 @@ import FindCountry from './components/FindCountry';
 import Countries from './components/Countries';
 
 const App = () => {
-  const [newFilter, setNewFilter] = useState('chile');
+  const [newFilter, setNewFilter] = useState('');
   const [countries, setCountries] = useState([]);
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
 
   useEffect(() => {
     services.getCountries().then(data => setCountries(data));

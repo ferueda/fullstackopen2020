@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import services from './../services/APIservices';
+import Weather from './Weather';
 
 const Country = ({ country, showCountryInfo }) => {
   return (
@@ -7,24 +8,6 @@ const Country = ({ country, showCountryInfo }) => {
       {country.name} <button onClick={showCountryInfo}>Show</button>
     </div>
   );
-};
-
-const Weather = ({ weather, capital }) => {
-  console.log(weather);
-  if (weather) {
-    return (
-      <div>
-        <h3>Weather in {capital}</h3>
-        <img src={weather.weather_icons[0]} alt={`${capital} weather icon`} />
-        <div>Temperature: {weather.temperature}°C</div>
-        <div>
-          Wind: {weather.wind_speed} mph direction {weather.wind_dir}
-        </div>
-      </div>
-    );
-  } else {
-    return <p>No weather data for {capital}</p>;
-  }
 };
 
 const CountryInfo = ({ country }) => {
