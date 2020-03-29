@@ -4,7 +4,7 @@
       "id": 1,
       "content": "HTML is easy",
       "date": "2019-05-30T17:30:31.098Z",
-      "important": true
+      "important": false
     },
     {
       "id": 2,
@@ -21,7 +21,7 @@
     {
       "content": "This is a test note",
       "date": "2020-03-28T15:01:39.740Z",
-      "important": false,
+      "important": true,
       "id": 4
     },
     {
@@ -33,7 +33,7 @@
     {
       "content": "xvxcv",
       "date": "2020-03-28T15:28:18.196Z",
-      "important": false,
+      "important": true,
       "id": 6
     },
     {
@@ -41,6 +41,12 @@
       "date": "2020-03-28T15:29:22.297Z",
       "important": true,
       "id": 7
+    },
+    {
+      "content": "sdfdsfdsf",
+      "date": "2020-03-29T01:43:19.565Z",
+      "important": true,
+      "id": 8
     }
   ]
 }

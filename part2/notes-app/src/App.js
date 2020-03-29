@@ -4,11 +4,14 @@ import NoteForm from './components/NoteForm';
 import FilterNotes from './components/FilterNotes';
 import noteService from './services/notes';
 
-const Notification = ({ message }) => {
-  if (message === null) {
+const Notification = ({ notification, message }) => {
+  if (notification === null) {
     return null;
+  } else if (notification === 'success') {
+    return <div className='success'>{message}</div>;
+  } else if (notification === 'error') {
+    return <div className='error'>{message}</div>;
   }
-  return <div className='error'>{message}</div>;
 };
 
 const Footer = () => {
@@ -37,7 +40,8 @@ const App = () => {
   const [notes, setNotes] = useState([]);
   const [showAll, setShowAll] = useState(true);
   const [newFilter, setNewFilter] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     noteService.getAll().then(initialNotes => {
@@ -62,11 +66,17 @@ const App = () => {
       .update(id, changedNote)
       .then(returnedNote => {
         setNotes(notes.map(note => (note.id !== id ? note : returnedNote)));
+        setNotification('success');
+        setMessage(`Note ${note.id} was updated successfully`);
+        setTimeout(() => {
+          setNotification(null);
+        }, 2000);
       })
       .catch(error => {
-        setErrorMessage(`Note ${note.content} was already removed from server`);
+        setNotification('error');
+        setMessage(`Note ${note.id} was already removed from server`);
         setTimeout(() => {
-          setErrorMessage(null);
+          setNotification(null);
         }, 2000);
         setNotes(notes.filter(n => n.id !== id));
       });
@@ -85,6 +95,11 @@ const App = () => {
       noteService.create(noteObject).then(returnedNote => {
         setNotes(notes.concat(returnedNote));
         setNewNote('');
+        setNotification('success');
+        setMessage('Note added successfully!');
+        setTimeout(() => {
+          setNotification(null);
+        }, 2000);
       });
     }
   };
@@ -98,7 +113,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
+      <Notification notification={notification} message={message} />
       <NoteForm
         addNote={addNote}
         newNote={newNote}
