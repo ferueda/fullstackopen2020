@@ -61,16 +61,36 @@ const App = () => {
     setShowAll(false);
   };
 
+  const displayNotification = (type, message) => {
+    setNotification(type);
+    setMessage(message);
+    setTimeout(() => setNotification(null), 2000);
+  };
+
+  const cleanNamePhoneInput = () => {
+    setNewName('');
+    setNewNumber('');
+  };
+
   const handleDeletionOf = (personId, personName) => {
     if (window.confirm(`Are you sure you want to delete ${personName}?`)) {
       personServices
         .deletePerson(personId)
         .then(() => personServices.getAll())
-        .then(updatedPersons => setPersons(updatedPersons));
-
-      setNotification('success');
-      setMessage(`${personName} was successfully deleted from phonebook`);
-      setTimeout(() => setNotification(null), 2000);
+        .then(updatedPersons => {
+          setPersons(updatedPersons);
+          displayNotification(
+            'success',
+            `${personName} was successfully deleted from phonebook`
+          );
+        })
+        .catch(() => {
+          displayNotification(
+            'error',
+            'Person is already deleted from the server'
+          );
+          personServices.getAll().then(personsData => setPersons(personsData));
+        });
     }
   };
 
@@ -104,11 +124,21 @@ const App = () => {
                 person.id !== modifiedPerson.id ? person : modifiedPerson
               )
             );
-            setNewName('');
-            setNewNumber('');
-            setNotification('success');
-            setMessage(`${personObject.name} number was successfully updated`);
-            setTimeout(() => setNotification(null), 2000);
+            cleanNamePhoneInput();
+            displayNotification(
+              'success',
+              `${personObject.name} number was successfully updated`
+            );
+          })
+          .catch(() => {
+            cleanNamePhoneInput();
+            displayNotification(
+              'error',
+              `${personObject.name} is deleted from the server`
+            );
+            personServices
+              .getAll()
+              .then(personsData => setPersons(personsData));
           });
       }
     } else {
@@ -121,13 +151,11 @@ const App = () => {
 
         personServices.createPerson(personObject).then(personResponse => {
           setPersons(persons.concat(personResponse));
-          setNewName('');
-          setNewNumber('');
-          setNotification('success');
-          setMessage(
+          cleanNamePhoneInput();
+          displayNotification(
+            'success',
             `${personObject.name} was successfully added to phonebook`
           );
-          setTimeout(() => setNotification(null), 2000);
         });
       }
     }
