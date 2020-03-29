@@ -1,10 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Heading from './components/Heading';
 import PersonForm from './components/PersonForm';
 import Filter from './components/Filter';
 import Persons from './components/Persons';
 import personServices from './services/persons';
+
+const Notification = ({ notification, message }) => {
+  const notificationStyle = {
+    backgroundColor: 'lightgrey',
+    padding: 10,
+    fontSize: 20,
+    border: '2px solid',
+    marginTop: 20
+  };
+
+  const successStyle = {
+    color: 'green'
+  };
+
+  const errorStyle = {
+    color: 'red'
+  };
+
+  if (notification === 'success') {
+    return (
+      <div style={{ ...notificationStyle, ...successStyle }}>{message}</div>
+    );
+  } else if (notification === 'error') {
+    return <div style={{ ...notificationStyle, ...errorStyle }}>{message}</div>;
+  } else {
+    return null;
+  }
+};
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,6 +39,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [newSearch, setNewSearch] = useState('');
   const [showAll, setShowAll] = useState(true);
+  const [notification, setNotification] = useState(null);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     personServices.getAll().then(initialData => {
@@ -38,6 +67,10 @@ const App = () => {
         .deletePerson(personId)
         .then(() => personServices.getAll())
         .then(updatedPersons => setPersons(updatedPersons));
+
+      setNotification('success');
+      setMessage(`${personName} was successfully deleted from phonebook`);
+      setTimeout(() => setNotification(null), 2000);
     }
   };
 
@@ -73,6 +106,9 @@ const App = () => {
             );
             setNewName('');
             setNewNumber('');
+            setNotification('success');
+            setMessage(`${personObject.name} number was successfully updated`);
+            setTimeout(() => setNotification(null), 2000);
           });
       }
     } else {
@@ -87,6 +123,11 @@ const App = () => {
           setPersons(persons.concat(personResponse));
           setNewName('');
           setNewNumber('');
+          setNotification('success');
+          setMessage(
+            `${personObject.name} was successfully added to phonebook`
+          );
+          setTimeout(() => setNotification(null), 2000);
         });
       }
     }
@@ -106,6 +147,7 @@ const App = () => {
     <div>
       <Heading type='h1' text='Phonebook' />
       <Filter newSearch={newSearch} handleSearchChange={handleSearchChange} />
+      <Notification notification={notification} message={message} />
       <PersonForm
         addPerson={addPerson}
         newName={newName}
