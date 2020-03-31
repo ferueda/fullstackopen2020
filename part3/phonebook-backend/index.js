@@ -54,6 +54,24 @@ app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
 
   persons = persons.filter(person => person.id !== id);
+  res.status(204).end();
+});
+
+app.post('/api/persons', (req, res) => {
+  const resBody = req.body;
+
+  if (!resBody.name || !resBody.number) {
+    return res.status(400).json({ error: 'missing name or number' });
+  }
+
+  const person = {
+    ...resBody,
+    id: persons.length > 0 ? Math.max(...persons.map(p => p.id)) + 1 : 0
+  };
+
+  persons = persons.concat(person);
+
+  res.json(persons);
 });
 
 const PORT = 3001;
