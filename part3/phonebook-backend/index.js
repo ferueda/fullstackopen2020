@@ -64,6 +64,10 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({ error: 'missing name or number' });
   }
 
+  if (persons.some(p => p.name === resBody.name)) {
+    return res.status(400).json({ error: 'name must be unique' });
+  }
+
   const person = {
     ...resBody,
     id: persons.length > 0 ? Math.max(...persons.map(p => p.id)) + 1 : 0
