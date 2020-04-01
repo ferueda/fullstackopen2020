@@ -1,5 +1,6 @@
-POST http://localhost:3001/api/notes
+POST https://cherry-cake-36519.herokuapp.com/api/notes
 Content-Type: application/json
 
 {
+  "content": "this is a test"
 }

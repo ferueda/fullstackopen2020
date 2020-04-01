@@ -21,7 +21,6 @@ const Footer = () => {
     fontSize: 16,
     padding: 10,
     backgroundColor: 'lightgrey',
-    border: 'solid 2px red',
     textAlign: 'center'
   };
 
@@ -87,13 +86,11 @@ const App = () => {
 
     if (newNote !== '') {
       const noteObject = {
-        content: newNote,
-        date: new Date().toISOString(),
-        important: Math.random() > 0.5
+        content: newNote
       };
 
-      noteService.create(noteObject).then(returnedNote => {
-        setNotes(notes.concat(returnedNote));
+      noteService.create(noteObject).then(returnedNotes => {
+        setNotes(returnedNotes);
         setNewNote('');
         setNotification('success');
         setMessage('Note added successfully!');

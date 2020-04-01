@@ -1,14 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-
-const requestLogger = (request, response, next) => {
-  console.log('Method: ', request.method);
-  console.log('Path: ', request.path);
-  console.log('Body: ', request.body);
-  console.log('---');
-  next();
-};
+const cors = require('cors');
 
 const unknownEndpoint = (request, response) => {
   response.status(404).json({ error: 'unknown endpoint' });
@@ -16,9 +9,10 @@ const unknownEndpoint = (request, response) => {
 
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 
+app.use(express.static('build'));
+app.use(cors());
 app.use(morgan(':method :url :status :response-time ms :body'));
 app.use(express.json());
-// app.use(requestLogger);
 
 let persons = [
   {
@@ -70,8 +64,12 @@ app.get('/api/persons/:id', (req, res) => {
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
 
+  if (!persons.find(person => person.id === id)) {
+    return res.status(400).json({ error: 'not such person' });
+  }
+
   persons = persons.filter(person => person.id !== id);
-  res.status(204).end();
+  res.json(persons);
 });
 
 app.post('/api/persons', (req, res) => {
@@ -95,9 +93,26 @@ app.post('/api/persons', (req, res) => {
   res.json(persons);
 });
 
+app.put('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const resBody = req.body;
+
+  if (!persons.find(person => person.id === id)) {
+    return res.status(400).json({ error: 'not such person' });
+  }
+
+  const index = persons.findIndex(person => person.id === id);
+
+  persons[index] = {
+    ...resBody
+  };
+
+  res.json(persons);
+});
+
 app.use(unknownEndpoint);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log('Server running on port ' + PORT);
+  console.log(`Server running on port ${PORT}`);
 });

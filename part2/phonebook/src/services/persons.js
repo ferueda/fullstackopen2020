@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:3001/persons';
+const baseURL = '/api/persons';
 
 const getAll = async () => {
   const response = await axios.get(baseURL);
@@ -14,7 +14,7 @@ const createPerson = async personObject => {
 
 const deletePerson = async personId => {
   const response = await axios.delete(`${baseURL}/${personId}`);
-  return response;
+  return response.data;
 };
 
 const updatePerson = async (personId, personObject) => {

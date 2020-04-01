@@ -1,16 +1,10 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:3001/notes';
+const baseUrl = '/api/notes';
 
 const getAll = async () => {
   const request = await axios.get(baseUrl);
-  const nonExisting = {
-    id: 1000,
-    content: "This note doesn't exist in the server",
-    date: new Date().toISOString(),
-    important: true
-  };
-  return request.data.concat(nonExisting);
+  return request.data;
 };
 
 const create = async newObject => {

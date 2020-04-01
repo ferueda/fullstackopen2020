@@ -76,9 +76,8 @@ const App = () => {
     if (window.confirm(`Are you sure you want to delete ${personName}?`)) {
       personServices
         .deletePerson(personId)
-        .then(() => personServices.getAll())
-        .then(updatedPersons => {
-          setPersons(updatedPersons);
+        .then(response => {
+          setPersons(response);
           displayNotification(
             'success',
             `${personName} was successfully deleted from phonebook`
@@ -118,12 +117,8 @@ const App = () => {
 
         personServices
           .updatePerson(person.id, personObject)
-          .then(modifiedPerson => {
-            setPersons(
-              persons.map(person =>
-                person.id !== modifiedPerson.id ? person : modifiedPerson
-              )
-            );
+          .then(response => {
+            setPersons(response);
             cleanNamePhoneInput();
             displayNotification(
               'success',
@@ -149,8 +144,8 @@ const App = () => {
           number: newNumber
         };
 
-        personServices.createPerson(personObject).then(personResponse => {
-          setPersons(persons.concat(personResponse));
+        personServices.createPerson(personObject).then(response => {
+          setPersons(response);
           cleanNamePhoneInput();
           displayNotification(
             'success',
