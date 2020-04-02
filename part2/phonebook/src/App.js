@@ -118,7 +118,7 @@ const App = () => {
         personServices
           .updatePerson(person.id, personObject)
           .then(response => {
-            setPersons(response);
+            setPersons(persons.concat(response));
             cleanNamePhoneInput();
             displayNotification(
               'success',
@@ -145,7 +145,7 @@ const App = () => {
         };
 
         personServices.createPerson(personObject).then(response => {
-          setPersons(response);
+          setPersons(persons.concat(response));
           cleanNamePhoneInput();
           displayNotification(
             'success',
