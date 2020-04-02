@@ -1,7 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const cors = require('cors');
+const Person = require('./model/person');
 
 const unknownEndpoint = (request, response) => {
   response.status(404).json({ error: 'unknown endpoint' });
@@ -14,62 +16,40 @@ app.use(cors());
 app.use(morgan(':method :url :status :response-time ms :body'));
 app.use(express.json());
 
-let persons = [
-  {
-    name: 'Arto Hellas',
-    number: '040-123456',
-    id: 1
-  },
-  {
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-    id: 2
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: 3
-  },
-  {
-    name: 'Felipe Rueda',
-    id: 4,
-    number: '12333'
-  }
-];
-
 app.get('/api/persons', (req, res) => {
-  res.json(persons);
+  Person.find({}).then(persons => {
+    res.json(persons.map(person => person.toJSON()));
+  });
 });
 
 app.get('/info', (req, res) => {
-  const content = `
+  Person.find({}).then(persons => {
+    const content = `
     <p>Phonebook has info for ${persons.length} people</p>
     <p>${new Date()}</p>
   `;
-  res.send(content);
+    res.send(content);
+  });
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-
-  const person = persons.find(p => p.id === id);
-
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
-  }
+  Person.findById(req.params.id).then(person => {
+    if (person) {
+      res.json(person.toJSON());
+    } else {
+      res.status(404).end();
+    }
+  });
 });
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-
-  if (!persons.find(person => person.id === id)) {
-    return res.status(400).json({ error: 'not such person' });
-  }
-
-  persons = persons.filter(person => person.id !== id);
-  res.json(persons);
+  Person.deleteOne({ id: req.params.id })
+    .then(deleted => {
+      res.json(deleted);
+    })
+    .catch(error => {
+      res.status(400).json({ error: error.message });
+    });
 });
 
 app.post('/api/persons', (req, res) => {
@@ -112,7 +92,7 @@ app.put('/api/persons/:id', (req, res) => {
 
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
