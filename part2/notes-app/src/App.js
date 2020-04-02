@@ -89,8 +89,8 @@ const App = () => {
         content: newNote
       };
 
-      noteService.create(noteObject).then(returnedNotes => {
-        setNotes(returnedNotes);
+      noteService.create(noteObject).then(returnedNote => {
+        setNotes(notes.concat(returnedNote));
         setNewNote('');
         setNotification('success');
         setMessage('Note added successfully!');

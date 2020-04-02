@@ -1,6 +1,7 @@
-POST https://cherry-cake-36519.herokuapp.com/api/notes
+POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "this is a test"
+  "content": "another test with mongo",
+  "important": true
 }
