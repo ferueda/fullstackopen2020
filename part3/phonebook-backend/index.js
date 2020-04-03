@@ -13,13 +13,13 @@ app.use(cors());
 app.use(morgan(':method :url :status :response-time ms :body'));
 
 app.get('/api/persons', (req, res) => {
-  Person.find({}).then(persons => {
-    res.json(persons.map(person => person.toJSON()));
+  Person.find({}).then((persons) => {
+    res.json(persons.map((person) => person.toJSON()));
   });
 });
 
 app.get('/info', (req, res) => {
-  Person.find({}).then(persons => {
+  Person.find({}).then((persons) => {
     const content = `
     <p>Phonebook has info for ${persons.length} people</p>
     <p>${new Date()}</p>
@@ -30,42 +30,45 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
   Person.findById(req.params.id)
-    .then(person => {
+    .then((person) => {
       if (person) {
         res.json(person.toJSON());
       } else {
         res.status(404).end();
       }
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(404).end();
     });
 });
 
 app.delete('/api/persons/:id', (req, res) => {
   Person.findByIdAndDelete(req.params.id)
-    .then(returnedObject => {
+    .then((returnedObject) => {
       res.json(returnedObject.toJSON());
     })
-    .catch(error => next(error));
+    .catch((error) => next(error));
 });
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const person = new Person({
-    ...req.body
+    ...req.body,
   });
 
-  person.save().then(person => {
-    res.json(person.toJSON());
-  });
+  person
+    .save()
+    .then((person) => {
+      res.json(person.toJSON());
+    })
+    .catch((error) => next(error));
 });
 
 app.put('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then(returnedObject => {
+    .then((returnedObject) => {
       res.json(returnedObject.toJSON());
     })
-    .catch(error => next(error));
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
@@ -79,6 +82,8 @@ const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return res.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message });
   }
 
   next(error);
