@@ -11,15 +11,15 @@ const Notification = ({ notification, message }) => {
     padding: 10,
     fontSize: 20,
     border: '2px solid',
-    marginTop: 20
+    marginTop: 20,
   };
 
   const successStyle = {
-    color: 'green'
+    color: 'green',
   };
 
   const errorStyle = {
-    color: 'red'
+    color: 'red',
   };
 
   if (notification === 'success') {
@@ -43,20 +43,20 @@ const App = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    personServices.getAll().then(initialData => {
+    personServices.getAll().then((initialData) => {
       setPersons(initialData);
     });
   }, []);
 
-  const handleNameChange = e => {
+  const handleNameChange = (e) => {
     setNewName(e.target.value);
   };
 
-  const handlePhoneChange = e => {
+  const handlePhoneChange = (e) => {
     setNewNumber(e.target.value);
   };
 
-  const handleSearchChange = e => {
+  const handleSearchChange = (e) => {
     setNewSearch(e.target.value);
     setShowAll(false);
   };
@@ -76,8 +76,8 @@ const App = () => {
     if (window.confirm(`Are you sure you want to delete ${personName}?`)) {
       personServices
         .deletePerson(personId)
-        .then(response => {
-          setPersons(persons.filter(person => person.id !== response.id));
+        .then((response) => {
+          setPersons(persons.filter((person) => person.id !== response.id));
           displayNotification(
             'success',
             `${personName} was successfully deleted from phonebook`
@@ -88,21 +88,23 @@ const App = () => {
             'error',
             'Person is already deleted from the server'
           );
-          personServices.getAll().then(personsData => setPersons(personsData));
+          personServices
+            .getAll()
+            .then((personsData) => setPersons(personsData));
         });
     }
   };
 
-  const addPerson = e => {
+  const addPerson = (e) => {
     e.preventDefault();
 
     if (
       persons.find(
-        person => person.name.toLowerCase() === newName.toLowerCase()
+        (person) => person.name.toLowerCase() === newName.toLowerCase()
       )
     ) {
       const person = persons.find(
-        person => person.name.toLowerCase() === newName.toLowerCase()
+        (person) => person.name.toLowerCase() === newName.toLowerCase()
       );
 
       if (
@@ -112,14 +114,14 @@ const App = () => {
       ) {
         const personObject = {
           ...person,
-          number: newNumber
+          number: newNumber,
         };
 
         personServices
           .updatePerson(person.id, personObject)
-          .then(response => {
+          .then((response) => {
             setPersons(
-              persons.map(person =>
+              persons.map((person) =>
                 person.id !== response.id ? person : response
               )
             );
@@ -137,7 +139,7 @@ const App = () => {
             );
             personServices
               .getAll()
-              .then(personsData => setPersons(personsData));
+              .then((personsData) => setPersons(personsData));
           });
       }
     } else {
@@ -145,10 +147,10 @@ const App = () => {
         const personObject = {
           name: newName,
           id: persons.length + 1,
-          number: newNumber
+          number: newNumber,
         };
 
-        personServices.createPerson(personObject).then(response => {
+        personServices.createPerson(personObject).then((response) => {
           setPersons(persons.concat(response));
           cleanNamePhoneInput();
           displayNotification(
@@ -161,12 +163,12 @@ const App = () => {
   };
 
   const displayBlock = {
-    display: 'block'
+    display: 'block',
   };
 
   const personsToShow = showAll
     ? persons
-    : persons.filter(person =>
+    : persons.filter((person) =>
         person.name.toLowerCase().includes(newSearch.toLowerCase())
       );
 
