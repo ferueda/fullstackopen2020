@@ -33,13 +33,17 @@ app.get('/info', (req, res) => {
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  Person.findById(req.params.id).then(person => {
-    if (person) {
-      res.json(person.toJSON());
-    } else {
+  Person.findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(person.toJSON());
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(error => {
       res.status(404).end();
-    }
-  });
+    });
 });
 
 app.delete('/api/persons/:id', (req, res) => {

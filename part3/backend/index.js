@@ -5,16 +5,12 @@ const morgan = require('morgan');
 const cors = require('cors');
 const Note = require('./models/note');
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).json({ error: 'unknown endpoint' });
-};
-
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 
 app.use(express.static('build'));
+app.use(express.json());
 app.use(cors());
 app.use(morgan(':method :url :status :response-time ms :body'));
-app.use(express.json());
 
 app.get('/api/notes', (req, res) => {
   Note.find({}).then(notes => {
@@ -25,19 +21,36 @@ app.get('/api/notes', (req, res) => {
 app.get('/api/notes/:id', (req, res) => {
   Note.findById(req.params.id)
     .then(note => {
-      res.json(note.toJSON());
+      if (note) {
+        res.json(note.toJSON());
+      } else {
+        res.status(404).end();
+      }
     })
-    .catch(error => {
-      res.status(404).end();
-    });
+    .catch(() => next(error));
 });
 
 app.delete('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id);
+  Note.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch(error => next(error));
+});
 
-  notes = notes.filter(note => note.id !== id);
+app.put('/api/notes/:id', (req, res, next) => {
+  const body = req.body;
 
-  res.status(204).end();
+  const note = {
+    content: body.content,
+    important: body.important
+  };
+
+  Note.findByIdAndUpdate(req.params.id, note, { new: true })
+    .then(updatedNote => {
+      res.json(updatedNote.toJSON());
+    })
+    .catch(error => next(error));
 });
 
 app.post('/api/notes', (req, res) => {
@@ -58,10 +71,25 @@ app.post('/api/notes', (req, res) => {
   });
 });
 
+const unknownEndpoint = (req, res) => {
+  res.status(404).json({ error: 'unknown endpoint' });
+};
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return res.status(400).send({ error: 'malformatted id' });
+  }
+
+  next(error);
+};
+
 app.use(unknownEndpoint);
 
 const PORT = process.env.PORT;
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+app.use(errorHandler);
