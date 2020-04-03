@@ -1,8 +1,6 @@
-PUT http://localhost:3001/api/persons/4
+PUT http://localhost:3001/api/persons/5e8697303ae0c533ec125564
 Content-Type: application/json
 
 {
-    "name": "Felipe Rueda",
-    "id": 4,
-    "number": "123"
-  }
+  "number": 234234
+}

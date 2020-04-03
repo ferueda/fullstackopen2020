@@ -60,21 +60,12 @@ app.post('/api/persons', (req, res) => {
   });
 });
 
-app.put('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const resBody = req.body;
-
-  if (!persons.find(person => person.id === id)) {
-    return res.status(400).json({ error: 'not such person' });
-  }
-
-  const index = persons.findIndex(person => person.id === id);
-
-  persons[index] = {
-    ...resBody
-  };
-
-  res.json(persons);
+app.put('/api/persons/:id', (req, res, next) => {
+  Person.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(returnedObject => {
+      res.json(returnedObject.toJSON());
+    })
+    .catch(error => next(error));
 });
 
 const unknownEndpoint = (request, response) => {

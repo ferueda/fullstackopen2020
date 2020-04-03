@@ -118,7 +118,11 @@ const App = () => {
         personServices
           .updatePerson(person.id, personObject)
           .then(response => {
-            setPersons(persons.concat(response));
+            setPersons(
+              persons.map(person =>
+                person.id !== response.id ? person : response
+              )
+            );
             cleanNamePhoneInput();
             displayNotification(
               'success',
