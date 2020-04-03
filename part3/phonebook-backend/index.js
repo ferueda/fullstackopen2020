@@ -5,16 +5,12 @@ const morgan = require('morgan');
 const cors = require('cors');
 const Person = require('./model/person');
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).json({ error: 'unknown endpoint' });
-};
-
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 
 app.use(express.static('build'));
+app.use(express.json());
 app.use(cors());
 app.use(morgan(':method :url :status :response-time ms :body'));
-app.use(express.json());
 
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
@@ -47,13 +43,11 @@ app.get('/api/persons/:id', (req, res) => {
 });
 
 app.delete('/api/persons/:id', (req, res) => {
-  Person.deleteOne({ id: req.params.id })
-    .then(deleted => {
-      res.json(deleted);
+  Person.findByIdAndDelete(req.params.id)
+    .then(returnedObject => {
+      res.json(returnedObject.toJSON());
     })
-    .catch(error => {
-      res.status(400).json({ error: error.message });
-    });
+    .catch(error => next(error));
 });
 
 app.post('/api/persons', (req, res) => {
@@ -83,7 +77,23 @@ app.put('/api/persons/:id', (req, res) => {
   res.json(persons);
 });
 
+const unknownEndpoint = (request, response) => {
+  response.status(404).json({ error: 'unknown endpoint' });
+};
+
 app.use(unknownEndpoint);
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return res.status(400).send({ error: 'malformatted id' });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

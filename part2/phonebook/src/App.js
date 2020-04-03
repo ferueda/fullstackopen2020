@@ -77,7 +77,7 @@ const App = () => {
       personServices
         .deletePerson(personId)
         .then(response => {
-          setPersons(response);
+          setPersons(persons.filter(person => person.id !== response.id));
           displayNotification(
             'success',
             `${personName} was successfully deleted from phonebook`
