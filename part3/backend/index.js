@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const Note = require('./models/note');
 
-morgan.token('body', (req, res) => JSON.stringify(req.body));
+morgan.token('body', (req) => JSON.stringify(req.body));
 
 app.use(express.static('build'));
 app.use(express.json());
@@ -18,7 +18,7 @@ app.get('/api/notes', (req, res) => {
   });
 });
 
-app.get('/api/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req, res, next) => {
   Note.findById(req.params.id)
     .then((note) => {
       if (note) {
@@ -27,10 +27,10 @@ app.get('/api/notes/:id', (req, res) => {
         res.status(404).end();
       }
     })
-    .catch(() => next(error));
+    .catch((error) => next(error));
 });
 
-app.delete('/api/notes/:id', (req, res) => {
+app.delete('/api/notes/:id', (req, next) => {
   Note.findByIdAndDelete(req.params.id)
     .then((res) => {
       res.json(res.toJSON());
