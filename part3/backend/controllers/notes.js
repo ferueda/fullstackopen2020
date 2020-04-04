@@ -59,4 +59,4 @@ notesRouter.put('/:id', (req, res, next) => {
     .catch((error) => next(error));
 });
 
-module.exports = { notesRouter };
+module.exports = notesRouter;

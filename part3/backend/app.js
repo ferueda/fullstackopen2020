@@ -26,9 +26,9 @@ app.use(express.static('build'));
 app.use(express.json());
 app.use(middleware.requestLogger);
 
-app.use('api/notes', notesRouter);
+app.use('/api/notes', notesRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
-module.exports = { app };
+module.exports = app;
