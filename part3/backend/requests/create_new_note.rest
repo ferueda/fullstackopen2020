@@ -2,6 +2,7 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "another test with mongo",
-  "important": true
+  "content": "second note asociated to an user",
+  "important": false,
+  "userId": "5e8bb7319f921d40dca87abe"
 }
