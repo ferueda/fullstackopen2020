@@ -50,6 +50,34 @@ test('creates a new blog', async () => {
   expect(titles).toContain('This is blog number one');
 });
 
+test('if likes defaults to 0 if not given', async () => {
+  const newBlog = {
+    title: 'This is blog number one',
+    author: 'Felipe Rueda',
+    url: 'fakeurl.com',
+  };
+
+  const response = await api.post('/api/blogs').send(newBlog);
+
+  expect(response.body.likes).toBe(0);
+});
+
+test('if new blog has title and url', async () => {
+  const newBlogOne = {
+    author: 'Felipe Rueda',
+    url: 'fakeurl.com',
+    likes: 2,
+  };
+  const newBlogTwo = {
+    title: 'This is blog number one',
+    author: 'Felipe Rueda',
+    likes: 7,
+  };
+
+  await api.post('/api/blogs').send(newBlogOne).expect(400);
+  await api.post('/api/blogs').send(newBlogTwo).expect(400);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
