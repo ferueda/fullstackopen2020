@@ -15,17 +15,17 @@ notesRouter.get('/:id', async (req, res) => {
   }
 });
 
-notesRouter.post('/', async (req, res) => {
-  const body = req.body;
+notesRouter.post('/', async (request, response) => {
+  const body = request.body;
 
   const note = new Note({
     content: body.content,
-    important: body.important || false,
+    important: body.important === undefined ? false : body.important,
     date: new Date(),
   });
 
   const savedNote = await note.save();
-  res.json(savedNote.toJSON());
+  response.json(savedNote.toJSON());
 });
 
 notesRouter.delete('/:id', async (req, res) => {
