@@ -78,6 +78,17 @@ test('if new blog has title and url', async () => {
   await api.post('/api/blogs').send(newBlogTwo).expect(400);
 });
 
+test('id a blog was deleted', async () => {
+  const blogsAtTheStart = await helper.blogsInDb();
+  const blogToDelete = blogsAtTheStart[0];
+
+  const response = await api.delete(`/api/blogs/${blogToDelete.id}`);
+  expect(response.status).toBe(204);
+
+  const blogsAtTheEnd = await helper.blogsInDb();
+  expect(blogsAtTheEnd).toHaveLength(blogsAtTheStart.length - 1);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
