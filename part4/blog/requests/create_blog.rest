@@ -1,10 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGcOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjVlOGNjZmQwMGI4MmI5MGNkYzE5MWYxMyIsImlhdCI6MTU4NjI5MDU2OX0.SMfH2vX4B_2HfQ7p7z4-JcnPq9PN2Zi39eZ-aFBYHRw
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjVlOGNjZmQwMGI4MmI5MGNkYzE5MWYxMyIsImlhdCI6MTU4NjI5MzAyM30.eHIUdHDRJwey5wUwWm5IhUIIV-Pda5V-LOh7TwBAXJw
 
 {
-  "title": "This is another title",
-  "author": "Felipe",
-  "url": "www.fakeurl.com",
+  "title": "blog for deleting",
+  "author": "will be deleted",
+  "url": "www.fakeurl",
   "likes": 3
 }
