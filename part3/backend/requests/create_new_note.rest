@@ -1,8 +1,8 @@
 POST http://localhost:3001/api/notes/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjVlOGM5NzZkNjRmZDdjMzEzY2Q4YjlhYSIsImlhdCI6MTU4NjI3MzkwMH0.0btG7HNkTv3-d2WJMnv0az_vOwyj_j4sOygGhXfsIFk
+Authorization: bearer eyJhbGcOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjVlOGM5NzZkNjRmZDdjMzEzY2Q4YjlhYSIsImlhdCI6MTU4NjI5MTg5N30._yOQjuCJP9O4AYZtPJsj_sa8CVmGbk6rvz1J_esE8jA
 
 {
-  "content": "signed in note",
+  "content": "this is a cool note signed from a middleware",
   "important": false
 }
