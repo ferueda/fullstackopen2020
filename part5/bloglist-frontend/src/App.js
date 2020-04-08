@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
+import Profile from './components/Profile';
 import blogServices from './services/blogs';
 import loginServices from './services/login';
-
-const Profile = ({ username }) => {
-  return (
-    <div>
-      <p>{username} logged in</p>
-    </div>
-  );
-};
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -22,13 +15,32 @@ const App = () => {
     blogServices.getAll().then((data) => setBlogs(data));
   }, []);
 
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem('blogappLoggedUser');
+
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser);
+      setUser(user);
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    const user = await loginServices.login({ username, password });
-    setUser(user);
+    try {
+      const user = await loginServices.login({ username, password });
+      setUser(user);
+      window.localStorage.setItem('blogappLoggedUser', JSON.stringify(user));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const loginForm = () => {
+  const handleLogout = () => {
+    window.localStorage.removeItem('blogappLoggedUser');
+    setUser(null);
+  };
+
+  const loggedOut = () => {
     return (
       <LoginForm
         username={username}
@@ -40,15 +52,19 @@ const App = () => {
     );
   };
 
-  const profile = () => {
-    return <Profile username={user.username} />;
+  const loggedIn = () => {
+    return (
+      <React.Fragment>
+        <Profile username={user.name} handleLogout={handleLogout} />
+        <Blogs blogs={blogs} />
+      </React.Fragment>
+    );
   };
 
   return (
     <React.Fragment>
-      {user === null && loginForm()}
-      {user !== null && profile()}
-      {user !== null && <Blogs blogs={blogs} />}
+      {user === null && loggedOut()}
+      {user !== null && loggedIn()}
     </React.Fragment>
   );
 };
