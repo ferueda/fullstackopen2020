@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
 import Profile from './components/Profile';
+import CreateBlog from './components/CreateBlog';
 import blogServices from './services/blogs';
 import loginServices from './services/login';
 
@@ -10,6 +11,12 @@ const App = () => {
   const [username, setUsername] = useState('test');
   const [password, setPassword] = useState('test');
   const [user, setUser] = useState(null);
+
+  // create blog states
+
+  const [newBlogTitle, setNewBlogTitle] = useState('');
+  const [newBlogAuthor, setNewBlogAuthor] = useState('');
+  const [newBlogUrl, setNewBlogUrl] = useState('');
 
   useEffect(() => {
     blogServices.getAll().then((data) => setBlogs(data));
@@ -21,6 +28,7 @@ const App = () => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
       setUser(user);
+      blogServices.setToken(user.token);
     }
   }, []);
 
@@ -40,6 +48,26 @@ const App = () => {
     setUser(null);
   };
 
+  const handleBlogPost = async (e) => {
+    e.preventDefault();
+
+    const blogObject = {
+      title: newBlogTitle,
+      author: newBlogAuthor,
+      url: newBlogUrl,
+    };
+
+    try {
+      const response = await blogServices.createBlog(blogObject);
+      setBlogs(blogs.concat(response));
+      setNewBlogTitle('');
+      setNewBlogAuthor('');
+      setNewBlogUrl('');
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const loggedOut = () => {
     return (
       <LoginForm
@@ -56,6 +84,15 @@ const App = () => {
     return (
       <React.Fragment>
         <Profile username={user.name} handleLogout={handleLogout} />
+        <CreateBlog
+          newBlogTitle={newBlogTitle}
+          newBlogAuthor={newBlogAuthor}
+          newBlogUrl={newBlogUrl}
+          setNewBlogTitle={setNewBlogTitle}
+          setNewBlogAuthor={setNewBlogAuthor}
+          setNewBlogUrl={setNewBlogUrl}
+          handleBlogPost={handleBlogPost}
+        />
         <Blogs blogs={blogs} />
       </React.Fragment>
     );
