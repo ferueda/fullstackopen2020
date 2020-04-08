@@ -2,125 +2,176 @@ import React, { useState, useEffect } from 'react';
 import Notes from './components/Notes';
 import NoteForm from './components/NoteForm';
 import FilterNotes from './components/FilterNotes';
+import Notification from './components/Notification';
+import LoginForm from './components/LoginForm';
+import Footer from './components/Footer';
 import noteService from './services/notes';
+import loginService from './services/login';
 
-const Notification = ({ notification, message }) => {
-  if (notification === null) {
-    return null;
-  } else if (notification === 'success') {
-    return <div className='success'>{message}</div>;
-  } else if (notification === 'error') {
-    return <div className='error'>{message}</div>;
-  }
-};
-
-const Footer = () => {
-  const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: 16,
-    padding: 10,
-    backgroundColor: 'lightgrey',
-    textAlign: 'center'
-  };
-
+const UserInfo = ({ user, handleLogout }) => {
   return (
-    <div style={footerStyle}>
-      <br />
-      <em>
-        Note app, Department of Computer Science, University of Helsinki 2020
-      </em>
+    <div>
+      <span>
+        {user.name} {}
+      </span>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
 
 const App = () => {
-  const [newNote, setNewNote] = useState('');
   const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [newFilter, setNewFilter] = useState('');
   const [notification, setNotification] = useState(null);
   const [message, setMessage] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    noteService.getAll().then(initialNotes => {
+    noteService.getAll().then((initialNotes) => {
       setNotes(initialNotes);
     });
   }, []);
 
-  const handleNoteChange = e => {
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser');
+
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      noteService.setToken(user.token);
+    }
+  }, []);
+
+  const handleNoteChange = (e) => {
     setNewNote(e.target.value);
   };
 
-  const handleFilterChange = e => {
+  const handleFilterChange = (e) => {
     setNewFilter(e.target.value);
     setShowAll(false);
   };
 
-  const toggleImportanceOf = id => {
-    const note = notes.find(n => n.id === id);
+  const displayNotification = (type, message) => {
+    setNotification(type);
+    setMessage(message);
+    setTimeout(() => setNotification(null), 2000);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const user = await loginService.login({ username, password });
+
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user));
+
+      noteService.setToken(user.token);
+      setUser(user);
+
+      displayNotification(
+        'success',
+        `Hello, ${user.username}. Welcome back...`
+      );
+      setUsername('');
+      setPassword('');
+    } catch (error) {
+      displayNotification('error', 'Wrong credentials');
+    }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedNoteappUser');
+    setUser(null);
+  };
+
+  const toggleImportanceOf = (id) => {
+    const note = notes.find((n) => n.id === id);
     const changedNote = { ...note, important: !note.important };
 
     noteService
       .update(id, changedNote)
-      .then(returnedNote => {
-        setNotes(notes.map(note => (note.id !== id ? note : returnedNote)));
-        setNotification('success');
-        setMessage(`Note ${note.id} was updated successfully`);
-        setTimeout(() => {
-          setNotification(null);
-        }, 2000);
+      .then((returnedNote) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+        displayNotification(
+          'success',
+          `Note ${note.id} was updated successfully`
+        );
       })
-      .catch(error => {
-        setNotification('error');
-        setMessage(`Note ${note.id} was already removed from server`);
-        setTimeout(() => {
-          setNotification(null);
-        }, 2000);
-        setNotes(notes.filter(n => n.id !== id));
+      .catch((error) => {
+        displayNotification(
+          'error',
+          `Note ${note.id} was already removed from server`
+        );
+        setNotes(notes.filter((n) => n.id !== id));
       });
   };
 
-  const addNote = e => {
+  const addNote = (e) => {
     e.preventDefault();
 
     if (newNote !== '') {
       const noteObject = {
-        content: newNote
+        content: newNote,
       };
 
-      noteService.create(noteObject).then(returnedNote => {
+      noteService.create(noteObject).then((returnedNote) => {
         setNotes(notes.concat(returnedNote));
         setNewNote('');
-        setNotification('success');
-        setMessage('Note added successfully!');
-        setTimeout(() => {
-          setNotification(null);
-        }, 2000);
+        displayNotification('success', 'Note added successfully');
       });
     }
   };
 
   const notesToShow = showAll
     ? notes
-    : notes.filter(note =>
+    : notes.filter((note) =>
         note.content.toLowerCase().includes(newFilter.toLowerCase())
       );
+
+  const loginForm = () => (
+    <LoginForm
+      handleLogin={handleLogin}
+      username={username}
+      setUsername={setUsername}
+      password={password}
+      setPassword={setPassword}
+    />
+  );
+
+  const noteForm = () => (
+    <NoteForm
+      addNote={addNote}
+      newNote={newNote}
+      handleNoteChange={handleNoteChange}
+    />
+  );
+
+  const note = () => (
+    <Notes notes={notesToShow} toggleImportanceOf={toggleImportanceOf} />
+  );
+
+  const filterNotes = () => (
+    <FilterNotes
+      newFilter={newFilter}
+      handleFilterChange={handleFilterChange}
+    />
+  );
 
   return (
     <div>
       <h1>Notes</h1>
       <Notification notification={notification} message={message} />
-      <NoteForm
-        addNote={addNote}
-        newNote={newNote}
-        handleNoteChange={handleNoteChange}
-      />
-      <FilterNotes
-        newFilter={newFilter}
-        handleFilterChange={handleFilterChange}
-      />
-      <Notes notes={notesToShow} toggleImportanceOf={toggleImportanceOf} />
+
+      {user === null && loginForm()}
+
+      {user !== null && <UserInfo user={user} handleLogout={handleLogout} />}
+      {user !== null && noteForm()}
+      {user !== null && filterNotes()}
+      {user !== null && note()}
+
       <Footer />
     </div>
   );
