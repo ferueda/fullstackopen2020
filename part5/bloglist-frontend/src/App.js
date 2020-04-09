@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm';
 import Profile from './components/Profile';
 import CreateBlog from './components/CreateBlog';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 import blogServices from './services/blogs';
 import loginServices from './services/login';
 
@@ -79,7 +80,8 @@ const App = () => {
 
   const loggedOut = () => {
     return (
-      <React.Fragment>
+      <Togglable btnLabel='Login'>
+        <Notification notification={notification} message={message} />
         <LoginForm
           username={username}
           password={password}
@@ -87,8 +89,7 @@ const App = () => {
           setPassword={setPassword}
           handleLogin={handleLogin}
         />
-        <Notification notification={notification} message={message} />
-      </React.Fragment>
+      </Togglable>
     );
   };
 
@@ -96,15 +97,18 @@ const App = () => {
     return (
       <React.Fragment>
         <Profile username={user.name} handleLogout={handleLogout} />
-        <CreateBlog
-          newBlogTitle={newBlogTitle}
-          newBlogAuthor={newBlogAuthor}
-          newBlogUrl={newBlogUrl}
-          setNewBlogTitle={setNewBlogTitle}
-          setNewBlogAuthor={setNewBlogAuthor}
-          setNewBlogUrl={setNewBlogUrl}
-          handleBlogPost={handleBlogPost}
-        />
+        <h2>Blogs</h2>
+        <Togglable btnLabel='New blog'>
+          <CreateBlog
+            newBlogTitle={newBlogTitle}
+            newBlogAuthor={newBlogAuthor}
+            newBlogUrl={newBlogUrl}
+            setNewBlogTitle={setNewBlogTitle}
+            setNewBlogAuthor={setNewBlogAuthor}
+            setNewBlogUrl={setNewBlogUrl}
+            handleBlogPost={handleBlogPost}
+          />
+        </Togglable>
         <Notification notification={notification} message={message} />
         <Blogs blogs={blogs} />
       </React.Fragment>
