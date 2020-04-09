@@ -3,6 +3,7 @@ import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
 import Profile from './components/Profile';
 import CreateBlog from './components/CreateBlog';
+import Notification from './components/Notification';
 import blogServices from './services/blogs';
 import loginServices from './services/login';
 
@@ -17,6 +18,11 @@ const App = () => {
   const [newBlogTitle, setNewBlogTitle] = useState('');
   const [newBlogAuthor, setNewBlogAuthor] = useState('');
   const [newBlogUrl, setNewBlogUrl] = useState('');
+
+  // notification states
+
+  const [notification, setNotification] = useState(null);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     blogServices.getAll().then((data) => setBlogs(data));
@@ -36,10 +42,12 @@ const App = () => {
     e.preventDefault();
     try {
       const user = await loginServices.login({ username, password });
-      setUser(user);
-      window.localStorage.setItem('blogappLoggedUser', JSON.stringify(user));
-    } catch (error) {
-      console.log(error);
+      if (user) {
+        setUser(user);
+        window.localStorage.setItem('blogappLoggedUser', JSON.stringify(user));
+      }
+    } catch {
+      displayNotification('error', 'Incorrect username or password');
     }
   };
 
@@ -63,20 +71,24 @@ const App = () => {
       setNewBlogTitle('');
       setNewBlogAuthor('');
       setNewBlogUrl('');
-    } catch (error) {
-      console.log(error.message);
+      displayNotification('success', 'Post created successfully');
+    } catch {
+      displayNotification('error', 'Error creating post');
     }
   };
 
   const loggedOut = () => {
     return (
-      <LoginForm
-        username={username}
-        password={password}
-        setUsername={setUsername}
-        setPassword={setPassword}
-        handleLogin={handleLogin}
-      />
+      <React.Fragment>
+        <LoginForm
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+        />
+        <Notification notification={notification} message={message} />
+      </React.Fragment>
     );
   };
 
@@ -93,9 +105,18 @@ const App = () => {
           setNewBlogUrl={setNewBlogUrl}
           handleBlogPost={handleBlogPost}
         />
+        <Notification notification={notification} message={message} />
         <Blogs blogs={blogs} />
       </React.Fragment>
     );
+  };
+
+  const displayNotification = (type, message) => {
+    setNotification(type);
+    setMessage(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 2000);
   };
 
   return (
