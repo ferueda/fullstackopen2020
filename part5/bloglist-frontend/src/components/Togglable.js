@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false);
@@ -9,6 +10,12 @@ const Togglable = (props) => {
   const toggleVisible = () => {
     setVisible(!visible);
   };
+
+  Togglable.propTypes = {
+    btnLabel: PropTypes.string.isRequired,
+  };
+
+  Togglable.displayName = 'Togglable';
 
   return (
     <div>
