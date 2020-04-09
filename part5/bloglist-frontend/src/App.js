@@ -10,8 +10,6 @@ import loginServices from './services/login';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('test');
-  const [password, setPassword] = useState('test');
   const [user, setUser] = useState(null);
 
   // notification states
@@ -33,8 +31,7 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginServices.login({ username, password });
       if (user) {
@@ -62,17 +59,22 @@ const App = () => {
     }
   };
 
+  const updateBlog = async (blogObject, id) => {
+    try {
+      const response = await blogServices.updateBlog(blogObject, id);
+      setBlogs(
+        blogs.map((blog) => (blog.id !== response.id ? blog : response))
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const loggedOut = () => {
     return (
       <Togglable btnLabel='Login'>
         <Notification notification={notification} message={message} />
-        <LoginForm
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
-        />
+        <LoginForm login={handleLogin} />
       </Togglable>
     );
   };
@@ -86,7 +88,7 @@ const App = () => {
           <BlogForm createBlog={handleBlogPost} />
         </Togglable>
         <Notification notification={notification} message={message} />
-        <Blogs blogs={blogs} />
+        <Blogs blogs={blogs} updateBlog={updateBlog} />
       </React.Fragment>
     );
   };
