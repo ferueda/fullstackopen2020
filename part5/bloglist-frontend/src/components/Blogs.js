@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const [visible, setVisible] = useState(false);
 
   const show = { display: visible ? 'none' : '' };
@@ -25,6 +25,12 @@ const Blog = ({ blog, updateBlog }) => {
     updateBlog(blogObject, blog.id);
   };
 
+  const handleDeleteClick = () => {
+    if (window.confirm(`Do you want to delete ${blog.title}?`)) {
+      deleteBlog(blog.id);
+    }
+  };
+
   return (
     <div style={basicStyle}>
       <div style={show}>
@@ -42,17 +48,25 @@ const Blog = ({ blog, updateBlog }) => {
           <button onClick={handleLikeClick}>like</button>
         </div>
         <div>Author: {blog.author}</div>
+        <button onClick={handleDeleteClick}>delete</button>
       </div>
     </div>
   );
 };
 
-const Blogs = ({ blogs, updateBlog }) => {
+const Blogs = ({ blogs, updateBlog, deleteBlog }) => {
   return (
     <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
-      ))}
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+          />
+        ))}
     </div>
   );
 };

@@ -70,6 +70,15 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async (id) => {
+    try {
+      const response = await blogServices.deleteBlog(id);
+      setBlogs(blogs.filter((blog) => blog.id !== response.id));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const loggedOut = () => {
     return (
       <Togglable btnLabel='Login'>
@@ -88,7 +97,7 @@ const App = () => {
           <BlogForm createBlog={handleBlogPost} />
         </Togglable>
         <Notification notification={notification} message={message} />
-        <Blogs blogs={blogs} updateBlog={updateBlog} />
+        <Blogs blogs={blogs} updateBlog={updateBlog} deleteBlog={deleteBlog} />
       </React.Fragment>
     );
   };

@@ -75,7 +75,7 @@ blogsRouter.delete('/:id', async (req, res, next) => {
 
     await user.save();
 
-    res.status(204).end();
+    res.json(deletedBlog.toJSON());
   } catch (error) {
     next(error);
   }
