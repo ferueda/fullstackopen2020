@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Blogs from './components/Blogs';
 import LoginForm from './components/LoginForm';
 import Profile from './components/Profile';
-import CreateBlog from './components/CreateBlog';
+import BlogForm from './components/CreateBlog';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 import blogServices from './services/blogs';
@@ -13,12 +13,6 @@ const App = () => {
   const [username, setUsername] = useState('test');
   const [password, setPassword] = useState('test');
   const [user, setUser] = useState(null);
-
-  // create blog states
-
-  const [newBlogTitle, setNewBlogTitle] = useState('');
-  const [newBlogAuthor, setNewBlogAuthor] = useState('');
-  const [newBlogUrl, setNewBlogUrl] = useState('');
 
   // notification states
 
@@ -57,21 +51,11 @@ const App = () => {
     setUser(null);
   };
 
-  const handleBlogPost = async (e) => {
-    e.preventDefault();
-
-    const blogObject = {
-      title: newBlogTitle,
-      author: newBlogAuthor,
-      url: newBlogUrl,
-    };
-
+  const handleBlogPost = async (blogObject) => {
     try {
       const response = await blogServices.createBlog(blogObject);
       setBlogs(blogs.concat(response));
-      setNewBlogTitle('');
-      setNewBlogAuthor('');
-      setNewBlogUrl('');
+
       displayNotification('success', 'Post created successfully');
     } catch {
       displayNotification('error', 'Error creating post');
@@ -99,15 +83,7 @@ const App = () => {
         <Profile username={user.name} handleLogout={handleLogout} />
         <h2>Blogs</h2>
         <Togglable btnLabel='New blog'>
-          <CreateBlog
-            newBlogTitle={newBlogTitle}
-            newBlogAuthor={newBlogAuthor}
-            newBlogUrl={newBlogUrl}
-            setNewBlogTitle={setNewBlogTitle}
-            setNewBlogAuthor={setNewBlogAuthor}
-            setNewBlogUrl={setNewBlogUrl}
-            handleBlogPost={handleBlogPost}
-          />
+          <BlogForm createBlog={handleBlogPost} />
         </Togglable>
         <Notification notification={notification} message={message} />
         <Blogs blogs={blogs} />

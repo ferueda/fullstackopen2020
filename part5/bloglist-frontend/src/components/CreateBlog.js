@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const CreateBlog = ({
-  newBlogTitle,
-  newBlogAuthor,
-  newBlogUrl,
-  setNewBlogTitle,
-  setNewBlogAuthor,
-  setNewBlogUrl,
-  handleBlogPost,
-}) => {
+const BlogForm = ({ createBlog }) => {
+  const [newBlogTitle, setNewBlogTitle] = useState('');
+  const [newBlogAuthor, setNewBlogAuthor] = useState('');
+  const [newBlogUrl, setNewBlogUrl] = useState('');
+
+  const handleBlogPost = (e) => {
+    e.preventDefault();
+
+    const blogObject = {
+      title: newBlogTitle,
+      author: newBlogAuthor,
+      url: newBlogUrl,
+    };
+
+    createBlog(blogObject);
+
+    setNewBlogTitle('');
+    setNewBlogAuthor('');
+    setNewBlogUrl('');
+  };
+
   return (
     <div>
       <h2>Create new</h2>
@@ -46,4 +58,4 @@ const CreateBlog = ({
   );
 };
 
-export default CreateBlog;
+export default BlogForm;
