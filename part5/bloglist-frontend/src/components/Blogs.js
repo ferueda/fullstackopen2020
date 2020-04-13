@@ -32,7 +32,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
   };
 
   return (
-    <div style={basicStyle}>
+    <div style={basicStyle} className='blogDiv'>
       <div style={show}>
         <span>{blog.title} </span>
         <button onClick={toggleVisible}>View</button>
@@ -71,4 +71,4 @@ const Blogs = ({ blogs, updateBlog, deleteBlog }) => {
   );
 };
 
-export default Blogs;
+export { Blogs, Blog };
