@@ -17,7 +17,7 @@ const NoteForm = ({ createNote }) => {
   };
 
   return (
-    <div>
+    <div className='formDiv'>
       <form onSubmit={addNote}>
         <input
           type='text'

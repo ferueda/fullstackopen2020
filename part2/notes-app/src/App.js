@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Notes from './components/Notes';
+import { Notes } from './components/Notes';
 import NoteForm from './components/NoteForm';
 import FilterNotes from './components/FilterNotes';
 import Notification from './components/Notification';
