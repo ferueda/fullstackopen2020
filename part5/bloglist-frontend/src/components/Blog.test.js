@@ -50,4 +50,15 @@ describe('<Blog />', () => {
     expect(urlDiv).toBeDefined();
     expect(urlDiv).toHaveTextContent('URL: www.google.cl');
   });
+
+  test('when like button clicked twice, the event handler is called twice', () => {
+    const mockHandler = jest.fn();
+
+    const button = component.getByText('View');
+    fireEvent.click(button);
+
+    const button 
+
+  })
+
 });
