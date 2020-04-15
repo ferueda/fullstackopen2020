@@ -35,7 +35,6 @@ const AnecdoteList = () => {
 
   const setFilter = (e) => {
     dispatch(filterChange(e.target.value));
-    console.log(e.target.value);
   };
 
   return (
