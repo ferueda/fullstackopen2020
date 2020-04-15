@@ -29,13 +29,10 @@ export const initializeAnecdotes = (data) => {
   };
 };
 
-export const createAnecdote = (anecdote) => {
+export const createAnecdote = (data) => {
   return {
     type: 'NEW_ANECDOTE',
-    data: {
-      content: anecdote,
-      votes: 0,
-    },
+    data,
   };
 };
 

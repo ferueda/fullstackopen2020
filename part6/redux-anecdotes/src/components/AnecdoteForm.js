@@ -5,13 +5,18 @@ import {
   setNotification,
   removeNotification,
 } from '../reducers/notificationReducer';
+import anecdoteServices from '../services/anecdotes';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
 
   const addAnecdote = (e) => {
     e.preventDefault();
-    dispatch(createAnecdote(e.target.anecdote.value));
+
+    anecdoteServices
+      .createNew(e.target.anecdote.value)
+      .then((response) => dispatch(createAnecdote(response)));
+
     e.target.anecdote.value = '';
   };
 
