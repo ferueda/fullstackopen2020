@@ -3,15 +3,8 @@ import anecdoteServices from '../services/anecdotes';
 const anecdoteReducer = (state = [], action) => {
   switch (action.type) {
     case 'VOTE':
-      const anecdoteToChange = state.find(
-        (anecdote) => anecdote.id === action.data.id
-      );
-      const changedAnecdote = {
-        ...anecdoteToChange,
-        votes: anecdoteToChange.votes + 1,
-      };
       return state.map((anecdote) =>
-        anecdote.id !== changedAnecdote.id ? anecdote : changedAnecdote
+        anecdote.id !== action.data.id ? anecdote : action.data
       );
     case 'NEW_ANECDOTE':
       return [...state, action.data];
@@ -44,12 +37,13 @@ export const createAnecdote = (anecdote) => {
   };
 };
 
-export const vote = (id) => {
-  return {
-    type: 'VOTE',
-    data: {
-      id,
-    },
+export const vote = (anecdote) => {
+  return async (dispatch) => {
+    const updatedAnecdote = await anecdoteServices.updateAnecdote(anecdote);
+    dispatch({
+      type: 'VOTE',
+      data: updatedAnecdote,
+    });
   };
 };
 

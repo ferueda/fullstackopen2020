@@ -1,9 +1,6 @@
 import React from 'react';
 import { vote } from '../reducers/anecdoteReducer';
-import {
-  setNotification,
-  removeNotification,
-} from '../reducers/notificationReducer';
+import { setNotification } from '../reducers/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import Notification from './Notification';
 import { filterChange } from '../reducers/filterReducer';
@@ -23,14 +20,13 @@ const AnecdoteList = () => {
 
   const voteNotification = (id) => {
     dispatch(
-      setNotification({
-        message: `You voted successfully for anecdote with id ${id}`,
-      })
+      setNotification(
+        {
+          message: `You voted successfully for anecdote with id ${id}`,
+        },
+        5
+      )
     );
-
-    setInterval(() => {
-      dispatch(removeNotification());
-    }, 5000);
   };
 
   const setFilter = (e) => {
@@ -51,7 +47,11 @@ const AnecdoteList = () => {
               has {anecdote.votes}
               <button
                 onClick={() => {
-                  dispatch(vote(anecdote.id));
+                  const updatedAnecdote = {
+                    ...anecdote,
+                    votes: anecdote.votes + 1,
+                  };
+                  dispatch(vote(updatedAnecdote));
                   voteNotification(anecdote.id);
                 }}
               >

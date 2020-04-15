@@ -1,10 +1,7 @@
 import React from 'react';
 import { createAnecdote } from '../reducers/anecdoteReducer';
 import { useDispatch } from 'react-redux';
-import {
-  setNotification,
-  removeNotification,
-} from '../reducers/notificationReducer';
+import { setNotification } from '../reducers/notificationReducer';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -18,14 +15,13 @@ const AnecdoteForm = () => {
 
   const noteAddedNotification = () => {
     dispatch(
-      setNotification({
-        message: 'Note added successfully',
-      })
+      setNotification(
+        {
+          message: 'Note added successfully',
+        },
+        5
+      )
     );
-
-    setInterval(() => {
-      dispatch(removeNotification());
-    }, 5000);
   };
 
   return (
