@@ -12,12 +12,21 @@ const Note = ({ note, handleClick }) => {
 
 const NotesList = () => {
   const dispatch = useDispatch();
-  const notes = useSelector((state) => state);
+  const notes = useSelector(({ filter, notes }) => {
+    if (filter === 'ALL') {
+      return notes;
+    } else if (filter === 'IMPORTANT') {
+      return notes.filter((note) => note.important);
+    } else if (filter === 'NON-IMPORTANT') {
+      return notes.filter((note) => !note.important);
+    }
+  });
 
   return (
     <ul>
       {notes.map((note) => (
         <Note
+          key={note.id}
           note={note}
           handleClick={() => dispatch(toggleImportanceOf(note.id))}
         />

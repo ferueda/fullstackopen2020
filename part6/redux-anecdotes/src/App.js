@@ -5,10 +5,8 @@ import AnecdoteList from './components/AnecdotesList';
 const App = () => {
   return (
     <div>
-      <h2>Anecdotes</h2>
-      <AnecdoteList />
-      <h2>create new</h2>
       <AnecdoteForm />
+      <AnecdoteList />
     </div>
   );
 };
