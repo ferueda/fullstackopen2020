@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleImportanceOf } from '../reducers/noteReducer';
+import { connect } from 'react-redux';
 
 const Note = ({ note, handleClick }) => {
   return (
@@ -35,4 +36,5 @@ const NotesList = () => {
   );
 };
 
-export default NotesList;
+const ConnectedNotes = connect()(NotesList);
+export default ConnectedNotes;
