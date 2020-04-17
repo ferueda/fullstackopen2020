@@ -1,4 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useHistory,
+  Redirect,
+} from 'react-router-dom';
+import noteService from './services/notes';
+import Notes, { Note } from './components/Notes';
 
 const Home = () => (
   <div>
@@ -6,11 +16,27 @@ const Home = () => (
   </div>
 );
 
-const Notes = () => (
-  <div>
-    <h2>Notes</h2>
-  </div>
-);
+const Login = (props) => {
+  const history = useHistory();
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    props.onLogin(e.target.username.value);
+    history.push('/');
+  };
+
+  return (
+    <div>
+      <h2>Login</h2>
+      <form onSubmit={onSubmit}>
+        <div>
+          <input name='username' type='text' placeholder='Enter username' />
+        </div>
+        <button type='submit'>Login</button>
+      </form>
+    </div>
+  );
+};
 
 const Users = () => (
   <div>
@@ -19,39 +45,64 @@ const Users = () => (
 );
 
 const App = () => {
-  const [page, setPage] = useState('home');
+  const [notes, setNotes] = useState([]);
+  const [user, setUser] = useState(null);
 
-  const toPage = (page) => {
-    return (e) => {
-      e.preventDefault();
-      setPage(page);
-    };
+  useEffect(() => {
+    noteService.getAll().then((data) => setNotes(data));
+  }, []);
+
+  const login = (user) => {
+    setUser(user);
   };
 
-  const content = () => {
-    if (page === 'home') {
-      return <Home />;
-    } else if (page === 'notes') {
-      return <Notes />;
-    } else if (page === 'users') {
-      return <Users />;
-    }
-  };
+  const padding = { padding: 5 };
 
   return (
     <div>
+      <Router>
+        <div>
+          <Link style={padding} to='/'>
+            Home
+          </Link>
+          <Link style={padding} to='/notes'>
+            Notes
+          </Link>
+          <Link style={padding} to='/users'>
+            Users
+          </Link>
+          {user ? (
+            <em>{user} logged in</em>
+          ) : (
+            <Link style={padding} to='/login'>
+              Login
+            </Link>
+          )}
+        </div>
+
+        <Switch>
+          <Route path='/notes/:id'>
+            <Note notes={notes} />
+          </Route>
+          <Route path='/notes/'>
+            <Notes notes={notes} />
+          </Route>
+          <Route
+            path='/users'
+            render={() => (user ? <Users /> : <Redirect to='/login' />)}
+          />
+          <Route path='/login'>
+            <Login onLogin={login} />
+          </Route>
+          <Route path='/'>
+            <Home />
+          </Route>
+        </Switch>
+      </Router>
       <div>
-        <a href='' onClick={toPage('home')}>
-          Home
-        </a>
-        <a href='' onClick={toPage('notes')}>
-          Notes
-        </a>
-        <a href='' onClick={toPage('users')}>
-          Users
-        </a>
+        <br />
+        <em>Note app, developed by Felipe Rueda.</em>
       </div>
-      {content()}
     </div>
   );
 };
