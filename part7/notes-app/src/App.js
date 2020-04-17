@@ -5,6 +5,7 @@ import {
   Link,
   useHistory,
   Redirect,
+  useHistory,
   useRouteMatch,
 } from 'react-router-dom';
 import noteService from './services/notes';
