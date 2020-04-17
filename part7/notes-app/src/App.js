@@ -6,6 +6,7 @@ import {
   Link,
   useHistory,
   Redirect,
+  useRouteMatch,
 } from 'react-router-dom';
 import noteService from './services/notes';
 import Notes, { Note } from './components/Notes';
@@ -52,6 +53,11 @@ const App = () => {
     noteService.getAll().then((data) => setNotes(data));
   }, []);
 
+  const match = useRouteMatch('/notes/:id');
+  const note = match
+    ? notes.find((note) => note.id === Number(match.params.id))
+    : null;
+
   const login = (user) => {
     setUser(user);
   };
@@ -60,45 +66,43 @@ const App = () => {
 
   return (
     <div>
-      <Router>
-        <div>
-          <Link style={padding} to='/'>
-            Home
+      <div>
+        <Link style={padding} to='/'>
+          Home
+        </Link>
+        <Link style={padding} to='/notes'>
+          Notes
+        </Link>
+        <Link style={padding} to='/users'>
+          Users
+        </Link>
+        {user ? (
+          <em>{user} logged in</em>
+        ) : (
+          <Link style={padding} to='/login'>
+            Login
           </Link>
-          <Link style={padding} to='/notes'>
-            Notes
-          </Link>
-          <Link style={padding} to='/users'>
-            Users
-          </Link>
-          {user ? (
-            <em>{user} logged in</em>
-          ) : (
-            <Link style={padding} to='/login'>
-              Login
-            </Link>
-          )}
-        </div>
+        )}
+      </div>
 
-        <Switch>
-          <Route path='/notes/:id'>
-            <Note notes={notes} />
-          </Route>
-          <Route path='/notes/'>
-            <Notes notes={notes} />
-          </Route>
-          <Route
-            path='/users'
-            render={() => (user ? <Users /> : <Redirect to='/login' />)}
-          />
-          <Route path='/login'>
-            <Login onLogin={login} />
-          </Route>
-          <Route path='/'>
-            <Home />
-          </Route>
-        </Switch>
-      </Router>
+      <Switch>
+        <Route path='/notes/:id'>
+          <Note note={note} />
+        </Route>
+        <Route path='/notes/'>
+          <Notes notes={notes} />
+        </Route>
+        <Route
+          path='/users'
+          render={() => (user ? <Users /> : <Redirect to='/login' />)}
+        />
+        <Route path='/login'>
+          <Login onLogin={login} />
+        </Route>
+        <Route path='/'>
+          <Home />
+        </Route>
+      </Switch>
       <div>
         <br />
         <em>Note app, developed by Felipe Rueda.</em>

@@ -1,9 +1,7 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export const Note = ({ notes }) => {
-  const id = useParams().id;
-  const note = notes.find((n) => n.id === Number(id));
+export const Note = ({ note }) => {
   return (
     <div>
       <h2>{note.content}</h2>
