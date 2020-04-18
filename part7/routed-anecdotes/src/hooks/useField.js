@@ -1,20 +1,23 @@
 import { useState } from 'react';
 
-export const useField = (type) => {
+export const useField = (name) => {
   const [value, setValue] = useState('');
 
-  const handleChange = (event) => {
+  const onChange = (event) => {
     setValue(event.target.value);
   };
 
-  const handleClear = () => {
+  const handleReset = () => {
     setValue('');
   };
 
   return {
-    type,
-    value,
-    handleChange,
-    handleClear,
+    [name]: {
+      name,
+      value,
+      onChange,
+    },
+
+    handleReset,
   };
 };

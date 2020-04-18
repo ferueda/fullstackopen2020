@@ -6,6 +6,7 @@ import {
   useRouteMatch,
   useHistory,
 } from 'react-router-dom';
+
 import { useField } from './hooks/useField';
 
 const Notification = ({ notification }) => {
@@ -103,9 +104,11 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const content = useField('text');
-  const author = useField('text');
-  const info = useField('text');
+  const { content } = useField('content');
+  const { author } = useField('author');
+  const { info } = useField('text');
+
+  console.log(content);
 
   const history = useHistory();
 
@@ -122,9 +125,6 @@ const CreateNew = (props) => {
 
   const handleReset = (e) => {
     e.preventDefault();
-    content.handleClear();
-    author.handleClear();
-    info.handleClear();
   };
 
   return (
@@ -133,23 +133,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name='content'
-            value={content.value}
-            onChange={content.handleChange}
-          />
+          <input {...content} />
         </div>
         <div>
           author
-          <input
-            name='author'
-            value={author.value}
-            onChange={author.handleChange}
-          />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info.value} onChange={info.handleChange} />
+          <input {...info} />
         </div>
         <button>create</button>
         <button onClick={handleReset}>clear</button>
